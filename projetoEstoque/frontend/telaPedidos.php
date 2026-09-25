@@ -27,6 +27,10 @@
         </div>
     </form>
 
+    <h2>Lista de Pedidos</h2>
+
+    <div id="lista-pedidos"></div>
+
     <a href="telaProdutos.php">voltar</a>
 
     <script src="../js/pedidos.js"></script>

@@ -2,8 +2,9 @@ let codigoPedido = document.querySelector('#codigo');
 let quantidadePedida = document.querySelector('#quantidadePedidos');
 let produto = document.querySelector('#produto');
 let indice = document.querySelector('#indice');
+let listaPedidos = document.querySelector('#lista-pedidos');
 
-function carregarProdutos(){
+function carregarProdutos() {
     fetch('../db/bancoProdutos.php')
         .then(resposta => resposta.json())
         .then(resposta => {
@@ -21,6 +22,21 @@ function carregarProdutos(){
     });
 }
 
+function carregarPedidos() {
+    fetch('../db/bancoDePedidos.php')
+        .then(resposta => resposta.json())
+        .then(resposta => {
+            let listaHTML = '';
+
+                for(let i= 0; i < resposta.length; i++){
+                    listaHTML+= `<p>${resposta[i].quantidade} ${resposta[i].nome_produto} (${resposta[i].codigo_produto})</p>`
+                }
+
+                listaPedidos.innerHTML = listaHTML;
+                
+    });
+}
+
 function adicionarPedido(){
 
     if(!produto.value){
@@ -32,7 +48,7 @@ function adicionarPedido(){
         return;
     }
 
-    fetch('../db/bancoPedidos.php', {
+    fetch('../db/bancoDePedidos.php', {
         method:'POST',
         headers:{
             "Content-Type": "application/x-www-form-urlencoded"
@@ -41,10 +57,22 @@ function adicionarPedido(){
     })
     .then(r => r.json())
     .then(r => {
-        console.log(r);
+        if(r.info) {
+            alert(r.info); return;
+        }
+
+        if(r.mensagem) {
+            alert(r.mensagem);
+
+            quantidadePedida.value = ''
+
+            carregarPedidos();
+            carregarProdutos();
+        }
+
     })
 }
     
 
-
-carregarProdutos()
+carregarProdutos();
+carregarPedidos();
